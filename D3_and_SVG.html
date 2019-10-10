@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+</head>
+
+<body>
+
+    <h1>Data Visualisation: D3.js & SVGs</h1>
+
+    <div id="draw_here"></div>
+    <br>
+    <br>
+
+    <h2>D3.js Charting</h2>
+
+    <button onclick="change_data()">Change Data</button>
+    <button onclick="filter_data()">Filter Data</button>
+    <input type="text" id="filter_value" placeholder="Minimum Value" />
+    <br>
+    <br>
+    <hr>
+
+    <div id="draw_there"></div>
+
+    <script>
+        var w = 900;
+        var h = 200;
+        var data = [40, 50, 10, 30, 20, 50, 40];
+
+        var svg = d3.select("#draw_here")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h)
+            .attr("fill", "yellowgreen");
+
+        svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d, i) {
+                return 50 + (i * 100);
+            })
+            .attr("cy", h / 2)
+            .attr("r", function(d) {
+                return d;
+            });
+
+        var h = 350;
+        var w = 700;
+        var barPadding = 1;
+
+        var dataset = [450, 100, 100, 279, 800, 65, 350, 120, 80, 130, 100,
+            102, 375, 200, 175, 168, 180, 230, 205, 170
+        ];
+
+        var scale = d3.scale.linear()
+            .domain([0, d3.max(dataset)])
+            .range([0, h]);
+
+        var colWidth = w / dataset.length;
+        var barWidth = colWidth - barPadding;
+
+        var svg = d3.select("#draw_here")
+            .append("svg")
+            .attr("height", h)
+            .attr("width", w)
+            .attr("fill", "teal");
+
+        svg.selectAll("rect")
+            .data(dataset)
+            .enter()
+            .append("rect")
+            .attr("x", function(d, i) {
+                return i * colWidth;
+            })
+            .attr("y", function(d) {
+                return h - scale(d);
+            })
+            .attr("height", function(d) {
+                return scale(d);
+            })
+            .attr("width", barWidth);
+
+        svg.selectAll("text")
+            .data(dataset)
+            .enter()
+            .append("text")
+            .text(function(d) {
+                return d;
+            })
+            .attr("text-anchor", "middle")
+            .attr("x", function(d, i) {
+                return i * colWidth + barWidth / 2;
+            })
+            .attr("y", function(d) {
+                return h - scale(d) + 20;
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "15px")
+            .attr("fill", "white");
+
+        // /* GLOBAL D3 */
+
+        // // SIZE OF CHART
+
+        // var w = 700;
+        // var h = 500;
+        // var barPadding = 1;
+        // var numberOfBars = 20;
+
+        // // USEFUL VARIABLES
+
+        // var colWidth = w / numberOfBars;
+        // var barWidth = colWidth - barPadding;
+
+        // // CREATE AN SVG ELEMENT
+
+        // var svg = d3.select("#draw_there")
+        //     .append("svg")
+        //     .attr("width", w)
+        //     .attr("height", h)
+        //     .attr("fill", "steelblue");
+
+        // // FIRST CALL TO change_data() WILL PLOT THE INITIAL CHART
+
+        // change_data();
+
+        // // GENERATES A RANDOM SET OF DATA AND PLOTS IT AS A BAR CHART
+        // // CALLED ONCE ON PAGE LOAD, THEN AGAIN EACH TIME THE BUTTON IS CLICKED
+
+        // function change_data() {
+        //     var data = generate_random_data(numberOfBars);
+        //     plot_data(data);
+        // }
+
+        // // GENERATES A RANDOM SET OF DATA AND FILTERS IT BEFORE PLOTTING IT AS A BAR CHART
+        // // REMOVES ANY BARS LESS THAN THE VALUE IN THE FILTER INPUT BOX
+
+        // function filter_data() {
+        //     var data = generate_random_data(numberOfBars);
+        //     data = data.filter(function(d) { return d >= get_filter_value(); });
+        //     plot_data(data);
+        // }
+
+        // function plot_data(data) {
+        //     // BIND THE DATA TO THE COLLECTION OF RECTANGLES AND TEXT IN THE SVG ELEMENT
+        //     var bars = svg.selectAll("rect")
+        //         .data(data);
+        //     var labels = svg.selectAll("text")
+        //         .data(data);
+
+        //     // REMOVE ANY UNNEEDED RECTANGLES AND LABELS (IF NEW DATA HAS FEWER ITEMS THAN THE EXISTING CHART)
+        //     bars.exit().remove();
+        //     labels.exit().remove();
+
+        //     // APPEND ANY NEW RECTANGLES AND LABELS THAT ARE NEEDED (IF NEW DATA HAS MORE ITEMS THAN THE EXISTING CHART)
+        //     create_bars(bars);
+        //     create_labels(labels);
+
+        //     // THERE SHOULD NOW BE THE RIGHT NUMBER OF RECTANGLES AND LABELS
+        //     // RESIZE AND POSITION EACH ONE ACCORDING TO THE NEW DATA ITEMS
+        //     resize_bars(bars, data);
+        //     position_labels(labels, data);
+        // }
+
+        // function create_bars(bars) {
+        //     bars.enter()
+        //         .append("rect");
+
+        // }
+
+        // // CODE REQUIRED TO RESIZE AN ALREADY-EXISTING RECT TO THE CORRECT SIZE
+        // function resize_bars(bars, data) {
+        //     bars.transition()
+        //         .duration(1000)
+
+        //         .attr("x", function(d, i) {
+        //             return i * colWidth;
+        //         })
+        //         .attr("y", function(d) {
+        //             return h - d;
+        //         })
+        //         .attr("width", barWidth)
+        //         .attr("height", function(d) {
+        //             return d;
+        //         });
+        // }
+
+        // // CREATE TEXT LABELS (THESE ARE THE PROPERTIES THAT DON'T CHANGE WHEN THE BAR GETS RESIZED)
+        // function create_labels(labels) {
+        //     labels.enter()
+        //         .append("text")
+        //         .attr("text-anchor", "middle")
+        //         .attr("font-family", "sans-serif")
+        //         .attr("font-size", "12px")
+        //         .attr("fill", "lightgrey")
+        // }
+
+        // // POSITION THE TEXT LABELS (THESE ARE THE PROPERTIES THAT DON'T CHANGE WHEN THE BAR GETS RESIZED)
+        // function position_labels(labels, data) {
+        //     labels.transition()
+        //         .duration(1000)
+        //         .text(function(d) {
+        //             return d;
+        //         })
+        //         .attr("x", function(d, i) {
+        //             return i * colWidth + barWidth / 2;
+        //         })
+        //         .attr("y", function(d) {
+        //             return h - d + 15;
+        //         });
+        // }
+
+        // // RETURN AN ARRAY OF N INTEGERS
+        // function generate_random_data(n) {
+        //     var data = [];
+
+        //     for (var i = 0; i < n; i++) {
+        //         var value = Math.floor((Math.random() * 500) + 1);
+        //         data.push(value);
+        //     }
+        //     return data;
+        // }
+
+        // // GET THE VALUE FROM THE FILTER INPUT BOX, OR USE 100 BY DEFAULT
+        // function get_filter_value() {
+        //     var value = null;
+        //     var x = document.getElementById("filter_value").value;
+        //     value = parseInt(x, 10);
+
+        //     if (isNaN(value))
+        //         value = 100;
+
+        //     return value;
+        // }
+
+        // SIZE OF CHART
+
+        var w = 1000;
+        var h = 500;
+        var barPadding = 1;
+        var numberOfBars = 10;
+
+        // USEFUL VARIABLES
+
+        var colWidth = w / numberOfBars;
+        var barWidth = colWidth - barPadding;
+
+        // CREATE AN SVG ELEMENT
+
+        var svg = d3.select("#draw_there")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h)
+            .attr("fill", "fuchsia");
+
+        // FIRST CALL TO change_data() WILL PLOT THE INITIAL CHART
+
+        change_data();
+
+        // GENERATES A RANDOM SET OF DATA, AND THEN PLOTS IT AS A BAR CHART
+        // CALLED ONCE ON PAGE LOAD, AND AGAIN EACH TIME THE BUTTON IS CLICKED
+
+        function change_data() {
+            var data = generate_random_data(numberOfBars);
+            plot_data(data);
+        }
+
+        // GENERATES A RANDOM SET OF DATA AND FILTERS IT BEFORE PLOTTING IT AS A BAR CHART
+        // REMOVES ANY BARS LESS THAN THE VALUE IN THE FILTER INPUT BOX
+
+        function filter_data() {
+            var data = generate_random_data(numberOfBars);
+            data = data.filter(function(d) {
+                return d >= get_filter_value();
+            });
+            plot_data(data);
+        }
+
+        function plot_data(data) {
+            // BIND THE DATA TO THE COLLECTIONS OF RECTANGLES AND TEXT IN THE SVG ELEMENT
+            var bars = svg.selectAll("rect")
+                .data(data);
+            var labels = svg.selectAll("text")
+                .data(data);
+
+            // REMOVE ANY UNNEEDED RECTANGLES AND LABELS (IF THE NEW DATA HAS FEWER ITEMS THAN THE EXISTING CHART)
+            bars.exit().remove();
+            labels.exit().remove();
+
+            // APPEND ANY NEW RECTANGLES AND LABELS AS NEEDED (IF THE NEW DATA HAS MORE ITEMS THAN THE EXISTING CHART)
+            create_bars(bars);
+            create_labels(labels);
+
+            // THERE SHOULD NOW BE THE CORRECT NUMBER OF RECTANGLES AND LABELS
+            // RESIZE AND POSITION EACH ONE ACCORDING TO THE NEW DATA ITEMS
+            resize_bars(bars, data);
+            position_labels(labels, data);
+        }
+
+        function create_bars(bars) {
+            bars.enter()
+                .append("rect");
+        }
+
+        function resize_bars(bars, data) {
+            bars.transition()
+                .duration(1500)
+                .attr("x", function(d, i) {
+                    return i * colWidth;
+                })
+                .attr("y", function(d) {
+                    return h - d;
+                })
+                .attr("width", barWidth)
+                .attr("height", function(d) {
+                    return d;
+                });
+        }
+
+        function create_labels(labels) {
+            labels.enter()
+                .append("text")
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "16px")
+                .attr("fill", "black");
+        }
+
+        function position_labels(labels, data) {
+            labels.transition()
+                .duration(1500)
+                .text(function(d) {
+                    return d;
+                })
+                .attr("x", function(d, i) {
+                    return i * colWidth + barWidth / 2;
+                })
+                .attr("y", function(d) {
+                    return h - d + 20;
+                });
+        }
+
+        // RETURN AN ARRAY OF N INTEGERS
+
+        function generate_random_data(n) {
+
+            data = [];
+
+            for (i = 0; i < n; i++) {
+                var value = Math.floor((Math.random() * 500) + 1);
+                data.push(value);
+            }
+            return data;
+        }
+
+        // GET THE VALUE FROM THE FILTER INPUT BOX, OR USE 100 BY DEFAULT
+
+        function get_filter_value() {
+            var value = null;
+            var x = document.getElementById("filter_value").value;
+            value = parseInt("x", 10);
+
+            if (isNaN(value)) {
+                value = 100;
+            }
+            return value;
+        }
+    </script>
+
+</body>
+
+</html>
